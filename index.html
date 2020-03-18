@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Customizable Chatbot</title>
+        <style>
+            .Chatbot_Answer {
+                background: lightgray;
+                color: black;
+                font-family: sans-serif;
+                padding: 10px;
+                border-radius: 10px;
+                width: 50%;
+                margin:10px;
+            }
+            
+            .User_Reply {
+                background: rgb(0, 130, 255);
+                color: white;
+                font-family: sans-serif;
+                padding: 10px;
+                border-radius: 10px;
+                width: 50%;
+                position: relative;
+                left: 40%;
+                margin: 10px;
+            }
+            
+            #container {
+                overflow-y: scroll;
+                padding-bottom:50px;
+            }
+            
+            #User_Input {
+                position: fixed;
+                top: 88.5%;
+                border: none;
+                width: 77%;
+                left: 0%;
+                height: 24px;
+                font-size: 17px;
+                margin: 10px;
+            }
+            
+            #nice_input_holder {
+                background: lightgray;
+                border: none;
+                position:fixed;
+                top: 90%;
+                width: 100%;
+                left:0%;
+                height:10%;
+            }
+            
+            #submit {
+                background: rgb(0, 130, 255);
+                border:none;
+                color:white;
+                border-radius:5px;
+                position:fixed;
+                top: 91%;
+                left:84.5%;
+                width: 76px;
+                height: 33px;
+            }
+            
+            #popHold {
+                background:rgb(0, 150, 255);
+                color:white;
+                font-family:sans-serif;
+                position:fixed;
+                top:-37%;
+                transition:1.3s;
+                left:27%;
+                right:20%;
+                width:40%;
+                height:30%;
+                padding:14px;
+                border-radius:10px;
+            }
+            
+            #popUp {
+                
+            }
+            
+            #answer_button {
+                border:none;
+                background:lightgray;
+                position:absolute;
+                top:102px;
+                left:163px;
+                width: 64px;
+                border-radius:5px;
+                height:35px;
+            }
+            
+            #answer_input {
+                border:none;
+                margin-top:10px;
+                width:127px;
+                height:25px;
+                font-size:15px;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="container">
+    </div>
+    
+    <div id="nice_input_holder">
+        <input id="User_Input" placeholder="Type a message">
+        <button id="submit">Submit</button>
+    </div>
+    
+    <div id="popHold">Hmm.... I don't know the answer to that one. Please give me an answer to remember:
+    <input id = "answer_input" placeholder="Type Answer Here">
+        <button id="answer_button">Submit</button>
+    </div>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyALmzcTkCMszf7W8uF6FxlSQ_QGRQatAeQ",
+        authDomain: "chatbot-489e5.firebaseapp.com",
+        databaseURL: "https://chatbot-489e5.firebaseio.com",
+        projectId: "chatbot-489e5",
+        storageBucket: "chatbot-489e5.appspot.com",
+        messagingSenderId: "536029535861",
+        appId: "1:536029535861:web:294db0febda621cb81623c"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <script>
+        var enter = document.getElementById('answer_button')
+    
+        var aIn = document.getElementById('answer_input')
+    
+        var popup = document.getElementById('popHold')
+    
+        var input = document.getElementById('User_Input')
+        
+        var submit = document.getElementById('submit')
+        
+        var container = document.getElementById('container')
+        
+        async function addQA(question, answer){
+            return await firebase.database().ref('QA/' + question).set(answer)
+        }
+        
+        async function getAnswerFromDatabase(question){
+            return await firebase.database().ref('QA/' + question).once('value')
+        }
+
+        function drawMessages(){
+            getAnswerFromDatabase(input.value.toLowerCase()).then(snapshot => {
+                var answer = snapshot.val()
+                if(answer === undefined || answer === null){
+                    unknownAnswer()
+                }else {
+                    container.innerHTML += "<div class='Chatbot_Answer'>" + answer + "</div>"
+                }
+            });
+        }
+        
+        function addMessage(){
+            container.innerHTML += "<div class='User_Reply'>" + input.value + "</div>"
+            
+            drawMessages()
+        }
+        
+        function getAnswer(){
+            var ask = aIn.value
+            
+            addQA(input.value.toLowerCase(), ask);
+            
+            if(ask !== null){
+                container.innerHTML += "<div class='Chatbot_Answer'>Added to Database</div>"
+                container.innerHTML += "<div class='Chatbot_Answer'>" + ask + "</div>"
+            }
+            
+            popup.style.top = '-37%'
+        }
+        
+        function unknownAnswer(){
+            popup.style.top = '0%'
+            aIn.value = ""
+        }
+        
+        submit.addEventListener("click", addMessage);
+        
+        enter.addEventListener("click", getAnswer);
+    </script>
+    </body>
+</html>
+

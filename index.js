@@ -1,15 +1,3 @@
-// Your web app's Firebase configuration
-var firebaseConfig = {
-    apiKey: "AIzaSyALmzcTkCMszf7W8uF6FxlSQ_QGRQatAeQ",
-    authDomain: "chatbot-489e5.firebaseapp.com",
-    databaseURL: "https://chatbot-489e5.firebaseio.com",
-    projectId: "chatbot-489e5",
-    storageBucket: "chatbot-489e5.appspot.com",
-    messagingSenderId: "536029535861",
-    appId: "1:536029535861:web:294db0febda621cb81623c"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
 var enter = document.getElementById('answer_button')
 
 var aIn = document.getElementById('answer_input')
